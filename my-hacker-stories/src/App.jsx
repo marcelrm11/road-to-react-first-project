@@ -19,18 +19,27 @@ const App = () => {
       points: 5,
       objectID: 1,
     },
+    {
+      title: "Realololo",
+      objectID: 2,
+    },
   ];
+  const [searchTerm, setSearchTerm] = React.useState("");
 
-  const handleSearch = (event) => {
-    console.log(event.target.value);
-  };
+  let filteredStories = stories.filter((story) => {
+    return story.title.toLowerCase().match(searchTerm.toLowerCase());
+  });
+
+  function handleSearch(event) {
+    setSearchTerm(event.target.value);
+  }
 
   return (
     <div className="App">
       <h1>My Hacker Stories</h1>
       <hr />
       <Search onSearch={handleSearch} />
-      <List list={stories} />
+      <List list={filteredStories} />
     </div>
   );
 };
@@ -47,7 +56,7 @@ const List = ({ list }) => {
 };
 
 const Item = (item) => {
-  console.log("Item renders");
+  // console.log("Item renders");
   return (
     <li>
       <span>
@@ -62,23 +71,15 @@ const Item = (item) => {
 
 const Search = ({ onSearch }) => {
   console.log("Search renders");
-  const [searchTerm, setSearchTerm] = React.useState("");
 
-  const handleChange = (event) => {
-    setSearchTerm(event.target.value);
-    onSearch(event);
-  };
-  const handleBlur = (event) => {
-    console.log(event.target.value, "blurred");
-  };
   return (
     <>
       <label htmlFor="search">Search: </label>
       <input
         id="search"
         type="text"
-        onChange={handleChange}
-        onBlur={handleBlur}
+        onChange={onSearch}
+        autoComplete="off"
       ></input>
     </>
   );
