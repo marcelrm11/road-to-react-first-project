@@ -21,11 +21,15 @@ const App = () => {
     },
   ];
 
+  const handleSearch = (event) => {
+    console.log(event.target.value);
+  };
+
   return (
     <div className="App">
       <h1>My Hacker Stories</h1>
       <hr />
-      <Search />
+      <Search onSearch={handleSearch} />
       <List list={stories} />
     </div>
   );
@@ -56,12 +60,13 @@ const Item = (item) => {
   );
 };
 
-const Search = () => {
+const Search = ({ onSearch }) => {
   console.log("Search renders");
   const [searchTerm, setSearchTerm] = React.useState("");
 
   const handleChange = (event) => {
     setSearchTerm(event.target.value);
+    onSearch(event);
   };
   const handleBlur = (event) => {
     console.log(event.target.value, "blurred");
