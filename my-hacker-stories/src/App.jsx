@@ -77,11 +77,25 @@ const Item = (item) => (
   </li>
 );
 
-const Search = () => (
-  <>
-    <label htmlFor="search">Search: </label>
-    <input id="search" type="text"></input>
-  </>
-);
+const Search = () => {
+  const handleChange = (event) => {
+    console.log(event);
+    console.log(event.target.value);
+  };
+  const handleBlur = (event) => {
+    console.log("blurred");
+  };
+  return (
+    <>
+      <label htmlFor="search">Search: </label>
+      <input
+        id="search"
+        type="text"
+        onChange={handleChange}
+        onBlur={handleBlur}
+      ></input>
+    </>
+  );
+};
 
 export default App;
