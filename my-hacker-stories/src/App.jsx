@@ -1,64 +1,36 @@
 import * as React from "react";
 
-const welcome = {
-  title: "React",
-  greeting: "Hey",
-};
-const football = {
-  players: [
-    "Messi",
-    "Cruyff",
-    "Maradona",
-    "Pelé",
-    "Ronaldinho",
-    "Rivaldo",
-    "Ronaldo",
-    "Xavi",
-    "Iniesta",
-  ],
-};
-
-const list = [
-  {
-    title: "React",
-    url: "https://reactjs.org/",
-    author: "Jordan Walke",
-    num_comments: 3,
-    points: 4,
-    objectID: 0,
-  },
-  {
-    title: "Redux",
-    url: "https://redux.js.org/",
-    author: "Dan Abramov, Andrew Clark",
-    num_comments: 2,
-    points: 5,
-    objectID: 1,
-  },
-];
-
 const App = () => {
+  const stories = [
+    {
+      title: "React",
+      url: "https://reactjs.org/",
+      author: "Jordan Walke",
+      num_comments: 3,
+      points: 4,
+      objectID: 0,
+    },
+    {
+      title: "Redux",
+      url: "https://redux.js.org/",
+      author: "Dan Abramov, Andrew Clark",
+      num_comments: 2,
+      points: 5,
+      objectID: 1,
+    },
+  ];
+
   return (
     <div className="App">
-      <h1>
-        {welcome.greeting} {welcome.title}
-      </h1>
+      <h1>My Hacker Stories</h1>
+      <hr />
       <Search />
-      <hr />
-      <h2>Football Players</h2>
-      <ul>
-        {football.players.map((player) => (
-          <li key={player}>{player}</li>
-        ))}
-      </ul>
-      <hr />
-      <h2>My Hacker Stories</h2>
-      <List />
+      <List list={stories} />
     </div>
   );
 };
 
-const List = () => (
+const List = ({ list }) => (
   <ul>
     {list.map((item) => {
       return <Item {...item} key={item.objectID} />;
@@ -83,7 +55,7 @@ const Search = () => {
     console.log(event.target.value);
   };
   const handleBlur = (event) => {
-    console.log("blurred");
+    console.log(event.target.value, "blurred");
   };
   return (
     <>
