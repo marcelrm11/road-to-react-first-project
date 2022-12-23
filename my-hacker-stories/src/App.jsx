@@ -1,6 +1,7 @@
 import * as React from "react";
 
 const App = () => {
+  console.log("App renders");
   const stories = [
     {
       title: "React",
@@ -30,29 +31,37 @@ const App = () => {
   );
 };
 
-const List = ({ list }) => (
-  <ul>
-    {list.map((item) => {
-      return <Item {...item} key={item.objectID} />;
-    })}
-  </ul>
-);
+const List = ({ list }) => {
+  console.log("List renders");
+  return (
+    <ul>
+      {list.map((item) => {
+        return <Item {...item} key={item.objectID} />;
+      })}
+    </ul>
+  );
+};
 
-const Item = (item) => (
-  <li>
-    <span>
-      <a href={item.url}>{item.title}</a>
-    </span>
-    <span>{item.author}</span>
-    <span>{item.num_comments}</span>
-    <span>{item.points}</span>
-  </li>
-);
+const Item = (item) => {
+  console.log("Item renders");
+  return (
+    <li>
+      <span>
+        <a href={item.url}>{item.title}</a>
+      </span>
+      <span>{item.author}</span>
+      <span>{item.num_comments}</span>
+      <span>{item.points}</span>
+    </li>
+  );
+};
 
 const Search = () => {
+  console.log("Search renders");
+  const [searchTerm, setSearchTerm] = React.useState("");
+
   const handleChange = (event) => {
-    console.log(event);
-    console.log(event.target.value);
+    setSearchTerm(event.target.value);
   };
   const handleBlur = (event) => {
     console.log(event.target.value, "blurred");
