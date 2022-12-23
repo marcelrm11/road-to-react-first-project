@@ -37,7 +37,7 @@ const list = [
   },
 ];
 
-function App() {
+const App = () => {
   return (
     <div className="App">
       <h1>
@@ -56,38 +56,32 @@ function App() {
       <List />
     </div>
   );
-}
+};
 
-function List() {
-  return (
-    <ul>
-      {list.map((item) => {
-        return <Item {...item} key={item.objectID} />;
-      })}
-    </ul>
-  );
-}
+const List = () => (
+  <ul>
+    {list.map((item) => {
+      return <Item {...item} key={item.objectID} />;
+    })}
+  </ul>
+);
 
-function Item(item) {
-  return (
-    <li>
-      <span>
-        <a href={item.url}>{item.title}</a>
-      </span>
-      <span>{item.author}</span>
-      <span>{item.num_comments}</span>
-      <span>{item.points}</span>
-    </li>
-  );
-}
+const Item = (item) => (
+  <li>
+    <span>
+      <a href={item.url}>{item.title}</a>
+    </span>
+    <span>{item.author}</span>
+    <span>{item.num_comments}</span>
+    <span>{item.points}</span>
+  </li>
+);
 
-function Search() {
-  return (
-    <>
-      <label htmlFor="search">Search: </label>
-      <input id="search" type="text"></input>
-    </>
-  );
-}
+const Search = () => (
+  <>
+    <label htmlFor="search">Search: </label>
+    <input id="search" type="text"></input>
+  </>
+);
 
 export default App;
