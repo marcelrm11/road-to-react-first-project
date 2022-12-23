@@ -1,5 +1,15 @@
 import * as React from "react";
 
+const useStorageState = (key, initialState) => {
+  const [value, setValue] = React.useState(
+    localStorage.getItem(key) ?? initialState
+  );
+  React.useEffect(() => {
+    localStorage.setItem(key, value);
+  }, [value, key]);
+
+  return [value, setValue];
+};
 const App = () => {
   console.log("App renders");
   const stories = [
@@ -24,21 +34,16 @@ const App = () => {
       objectID: 2,
     },
   ];
-  const [searchTerm, setSearchTerm] = React.useState(
-    localStorage.getItem("search") || ""
-  );
 
-  React.useEffect(() => {
-    localStorage.setItem("search", searchTerm);
-  }, [searchTerm]);
-
-  let filteredStories = stories.filter((story) => {
-    return story.title.toLowerCase().match(searchTerm.toLowerCase());
-  });
+  const [searchTerm, setSearchTerm] = useStorageState("search", "React");
 
   function handleSearch(event) {
     setSearchTerm(event.target.value);
   }
+
+  let filteredStories = stories.filter((story) => {
+    return story.title.toLowerCase().match(searchTerm.toLowerCase());
+  });
 
   return (
     <div className="App">
