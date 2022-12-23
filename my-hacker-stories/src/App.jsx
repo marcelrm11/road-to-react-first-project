@@ -38,7 +38,7 @@ const App = () => {
     <div className="App">
       <h1>My Hacker Stories</h1>
       <hr />
-      <Search onSearch={handleSearch} />
+      <Search search={searchTerm} onSearch={handleSearch} />
       <List list={filteredStories} />
     </div>
   );
@@ -69,7 +69,7 @@ const Item = (item) => {
   );
 };
 
-const Search = ({ onSearch }) => {
+const Search = ({ search, onSearch }) => {
   console.log("Search renders");
 
   return (
@@ -78,6 +78,7 @@ const Search = ({ onSearch }) => {
       <input
         id="search"
         type="text"
+        value={search}
         onChange={onSearch}
         autoComplete="off"
       ></input>
