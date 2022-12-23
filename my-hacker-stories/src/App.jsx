@@ -43,8 +43,7 @@ function App() {
       <h1>
         {welcome.greeting} {welcome.title}
       </h1>
-      <label htmlFor="search">Search: </label>
-      <input id="search" type="text"></input>
+      <Search />
       <hr />
       <h2>Football Players</h2>
       <ul>
@@ -54,19 +53,40 @@ function App() {
       </ul>
       <hr />
       <h2>My Hacker Stories</h2>
-      <ul>
-        {list.map((item) => (
-          <li key={item.objectID}>
-            <span>
-              <a href={item.url}>{item.title}</a>
-            </span>
-            <span>{item.author}</span>
-            <span>{item.num_comments}</span>
-            <span>{item.points}</span>
-          </li>
-        ))}
-      </ul>
+      <List />
     </div>
+  );
+}
+
+function List() {
+  return (
+    <ul>
+      {list.map((item) => {
+        return <Item {...item} key={item.objectID} />;
+      })}
+    </ul>
+  );
+}
+
+function Item(item) {
+  return (
+    <li>
+      <span>
+        <a href={item.url}>{item.title}</a>
+      </span>
+      <span>{item.author}</span>
+      <span>{item.num_comments}</span>
+      <span>{item.points}</span>
+    </li>
+  );
+}
+
+function Search() {
+  return (
+    <>
+      <label htmlFor="search">Search: </label>
+      <input id="search" type="text"></input>
+    </>
   );
 }
 
