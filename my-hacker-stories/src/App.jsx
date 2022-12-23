@@ -24,7 +24,13 @@ const App = () => {
       objectID: 2,
     },
   ];
-  const [searchTerm, setSearchTerm] = React.useState("");
+  const [searchTerm, setSearchTerm] = React.useState(
+    localStorage.getItem("search") || ""
+  );
+
+  React.useEffect(() => {
+    localStorage.setItem("search", searchTerm);
+  }, [searchTerm]);
 
   let filteredStories = stories.filter((story) => {
     return story.title.toLowerCase().match(searchTerm.toLowerCase());
