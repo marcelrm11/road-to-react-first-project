@@ -1,4 +1,6 @@
 import * as React from "react";
+import MyDropdown from "./reusable components/MyDropdown.jsx";
+import { MyRadioGroup } from "./reusable components/MyRadio.jsx";
 
 const useStorageState = (key, initialState) => {
   const [value, setValue] = React.useState(
@@ -34,6 +36,8 @@ const App = () => {
       objectID: 2,
     },
   ];
+  const drones = ["huey", "dewey", "louie"];
+  const pets = ["dog", "cat", "hamster", "parrot", "spider", "goldfish"];
 
   const [searchTerm, setSearchTerm] = useStorageState("search", "React");
 
@@ -49,8 +53,19 @@ const App = () => {
     <div className="App">
       <h1>My Hacker Stories</h1>
       <hr />
-      <Search search={searchTerm} onSearch={handleSearch} />
+      <InputWithLabel
+        id="search"
+        label="Search "
+        value={searchTerm}
+        onInputChange={handleSearch}
+      />
       <List list={filteredStories} />
+      <MyRadioGroup
+        title="Select a maintenance drone:"
+        name="drone"
+        options={drones}
+      />
+      <MyDropdown id="pet-select" options={pets} label="Choose a pet:" />
     </div>
   );
 };
@@ -80,18 +95,25 @@ const Item = ({ title, url, author, num_comments, points }) => {
   );
 };
 
-const Search = ({ search, onSearch }) => {
+const InputWithLabel = ({
+  id,
+  label,
+  type = "text",
+  value,
+  onInputChange,
+  autoComplete = "off",
+}) => {
   console.log("Search renders");
 
   return (
     <>
-      <label htmlFor="search">Search: </label>
+      <label htmlFor={id}>{label}</label>
       <input
-        id="search"
-        type="text"
-        value={search}
-        onChange={onSearch}
-        autoComplete="off"
+        id={id}
+        type={type}
+        value={value}
+        onChange={onInputChange}
+        autoComplete={autoComplete}
       ></input>
     </>
   );
