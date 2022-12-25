@@ -39,8 +39,20 @@ const App = () => {
   const drones = ["huey", "dewey", "louie"];
   const pets = ["dog", "cat", "hamster", "parrot", "spider", "goldfish"];
 
+  const getAsyncStories = () => {
+    return new Promise((resolve) =>
+      setTimeout(() => resolve({ data: { stories: initialStories } }), 2000)
+    );
+  };
+
   const [searchTerm, setSearchTerm] = useStorageState("search", "React");
-  const [stories, setStories] = React.useState(initialStories);
+  const [stories, setStories] = React.useState([]);
+
+  React.useEffect(() => {
+    getAsyncStories().then((result) => {
+      setStories(result.data.stories);
+    });
+  }, []);
 
   function handleSearch(event) {
     setSearchTerm(event.target.value);
