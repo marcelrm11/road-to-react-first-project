@@ -55,17 +55,18 @@ const App = () => {
       <hr />
       <InputWithLabel
         id="search"
-        label="Search "
         value={searchTerm}
         onInputChange={handleSearch}
-      />
+      >
+        <strong>Search: </strong>
+      </InputWithLabel>
       <List list={filteredStories} />
-      <MyRadioGroup
-        title="Select a maintenance drone:"
-        name="drone"
-        options={drones}
-      />
-      <MyDropdown id="pet-select" options={pets} label="Choose a pet:" />
+      <MyRadioGroup name="drone" options={drones}>
+        <strong>Select a maintenance drone:</strong>
+      </MyRadioGroup>
+      <MyDropdown id="pet-select" options={pets}>
+        <strong>Choose a pet: </strong>
+      </MyDropdown>
     </div>
   );
 };
@@ -97,17 +98,17 @@ const Item = ({ title, url, author, num_comments, points }) => {
 
 const InputWithLabel = ({
   id,
-  label,
   type = "text",
   value,
   onInputChange,
   autoComplete = "off",
+  children,
 }) => {
   console.log("Search renders");
 
   return (
     <>
-      <label htmlFor={id}>{label}</label>
+      <label htmlFor={id}>{children}</label>
       <input
         id={id}
         type={type}

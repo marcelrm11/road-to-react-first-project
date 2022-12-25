@@ -1,4 +1,4 @@
-import React from "react";
+import React, { Children } from "react";
 
 const MyRadioButton = ({
   id,
@@ -27,10 +27,10 @@ const MyRadioButton = ({
   );
 };
 
-const MyRadioGroup = ({ title, options, name }) => {
+const MyRadioGroup = ({ children, options, name }) => {
   return (
     <fieldset>
-      <legend>{title}</legend>
+      <legend>{children}</legend>
       {options.map((option) => (
         <MyRadioButton id={option} name={name} key={option} />
       ))}

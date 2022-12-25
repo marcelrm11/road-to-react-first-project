@@ -3,15 +3,15 @@ import React from "react";
 const MyDropdown = ({
   id,
   name = id,
-  label,
   options,
   selectMsg = "--Please choose an option--",
   capitalize = true,
   handleChange,
+  children,
 }) => {
   return (
     <>
-      {label ? <label htmlFor={id}>{label}</label> : ""}
+      <label htmlFor={id}>{children}</label>
       <select name={name} id={id}>
         <option value="" disabled>
           {selectMsg}
