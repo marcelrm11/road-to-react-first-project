@@ -14,7 +14,7 @@ const useStorageState = (key, initialState) => {
 };
 const App = () => {
   console.log("App renders");
-  const stories = [
+  const initialStories = [
     {
       title: "React",
       url: "https://reactjs.org/",
@@ -40,9 +40,13 @@ const App = () => {
   const pets = ["dog", "cat", "hamster", "parrot", "spider", "goldfish"];
 
   const [searchTerm, setSearchTerm] = useStorageState("search", "React");
+  const [stories, setStories] = React.useState(initialStories);
 
   function handleSearch(event) {
     setSearchTerm(event.target.value);
+  }
+  function handleRemoveStory(id) {
+    setStories(stories.filter((story) => story.objectID !== id));
   }
 
   let filteredStories = stories.filter((story) => {
@@ -61,7 +65,7 @@ const App = () => {
       >
         <strong>Search: </strong>
       </InputWithLabel>
-      <List list={filteredStories} />
+      <List list={filteredStories} onRemoveItem={handleRemoveStory} />
       <MyRadioGroup name="drone" options={drones}>
         <strong>Select a maintenance drone:</strong>
       </MyRadioGroup>
@@ -72,18 +76,28 @@ const App = () => {
   );
 };
 
-const List = ({ list }) => {
+const List = ({ list, onRemoveItem }) => {
   console.log("List renders");
   return (
     <ul>
-      {list.map(({ objectID, ...item }) => {
-        return <Item {...item} key={objectID} />;
+      {list.map((item) => {
+        return (
+          <Item {...item} key={item.objectID} onRemoveItem={onRemoveItem} />
+        );
       })}
     </ul>
   );
 };
 
-const Item = ({ title, url, author, num_comments, points }) => {
+const Item = ({
+  title,
+  objectID,
+  url,
+  author,
+  num_comments,
+  points,
+  onRemoveItem,
+}) => {
   // console.log("Item renders");
   return (
     <li>
@@ -93,6 +107,7 @@ const Item = ({ title, url, author, num_comments, points }) => {
       <span>{author}</span>
       <span>{num_comments}</span>
       <span>{points}</span>
+      <button onClick={() => onRemoveItem(objectID)}>Remove</button>
     </li>
   );
 };
