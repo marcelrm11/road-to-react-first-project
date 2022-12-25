@@ -57,6 +57,7 @@ const App = () => {
         id="search"
         value={searchTerm}
         onInputChange={handleSearch}
+        isFocused
       >
         <strong>Search: </strong>
       </InputWithLabel>
@@ -100,9 +101,10 @@ const InputWithLabel = ({
   id,
   type = "text",
   value,
-  onInputChange,
   autoComplete = "off",
+  onInputChange,
   children,
+  isFocused,
 }) => {
   console.log("Search renders");
 
@@ -115,6 +117,7 @@ const InputWithLabel = ({
         value={value}
         onChange={onInputChange}
         autoComplete={autoComplete}
+        autoFocus={isFocused}
       ></input>
     </>
   );
