@@ -15,28 +15,6 @@ const API_ENDPOINT = "https://hn.algolia.com/api/v1/search?query=";
 
 const App = () => {
   console.log("App renders");
-  // const initialStories = [
-  //   {
-  //     title: "React",
-  //     url: "https://reactjs.org/",
-  //     author: "Jordan Walke",
-  //     num_comments: 3,
-  //     points: 4,
-  //     objectID: 0,
-  //   },
-  //   {
-  //     title: "Redux",
-  //     url: "https://redux.js.org/",
-  //     author: "Dan Abramov, Andrew Clark",
-  //     num_comments: 2,
-  //     points: 5,
-  //     objectID: 1,
-  //   },
-  //   {
-  //     title: "Realololo",
-  //     objectID: 2,
-  //   },
-  // ];
 
   const actions = {
     storiesFetchInit: "STORIES_FETCH_INIT",
@@ -44,14 +22,6 @@ const App = () => {
     storiesFetchFailure: "STORIES_FETCH_FAILURE",
     removeStory: "REMOVE_STORY",
   };
-
-  // const getAsyncStories = () => {
-  // return new Promise((resolve) =>
-  //   setTimeout(() => resolve({ data: { stories: initialStories } }), 2000)
-  // );
-  // };
-  // const getAsyncStories = () =>
-  //   new Promise((resolve, reject) => setTimeout(reject, 2000));
 
   const storiesReducer = (state, action) => {
     switch (action.type) {
@@ -86,12 +56,6 @@ const App = () => {
 
   const [searchTerm, setSearchTerm] = useStorageState("search", "React");
 
-  // ********** useState *********** //
-  // const [stories, setStories] = React.useState([]);
-  // const [isLoading, setIsLoading] = React.useState(false);
-  // const [isError, setIsError] = React.useState(false);
-  // ******************************* //
-
   // ********** useReducer ********* //
   const [stories, dispatchStories] = React.useReducer(storiesReducer, {
     data: [],
@@ -100,19 +64,10 @@ const App = () => {
   }); // (reducer action, initial state) => (current state, state updater function)
   // ******************************* //
 
-  React.useEffect(() => {
+  const handleFetchStories = React.useCallback(() => {
     if (!searchTerm) return;
-    // setIsLoading(true);
     dispatchStories({ type: actions.storiesFetchInit });
-    // getAsyncStories()
-    //   .then((result) => {
-    //     // setStories(result.data.stories);
-    //     dispatchStories({
-    //       type: "STORIES_FETCH_SUCCESS",
-    //       payload: result.data.stories,
-    //     });
-    //     // setIsLoading(false);
-    //   })
+
     fetch(`${API_ENDPOINT}${searchTerm}`)
       .then((response) => response.json())
       .then((result) => {
@@ -121,17 +76,17 @@ const App = () => {
           payload: result.hits,
         });
       })
-      .catch((error) => {
-        // setIsError(true);
+      .catch(() => {
         dispatchStories({
           type: actions.storiesFetchFailure,
         });
-        console.log(error);
       });
   }, [searchTerm]);
+  React.useEffect(() => {
+    handleFetchStories();
+  }, [handleFetchStories]);
 
   function handleRemoveStory(id) {
-    // setStories(stories.filter((story) => story.objectID !== id));
     dispatchStories({
       type: actions.removeStory,
       payload: id,
@@ -141,10 +96,6 @@ const App = () => {
   function handleSearch(event) {
     setSearchTerm(event.target.value);
   }
-
-  // let searchedStories = stories.data.filter((story) => {
-  //   return story.title.toLowerCase().match(searchTerm.toLowerCase());
-  // });
 
   return (
     <div className="App">
@@ -190,7 +141,6 @@ const Item = ({
   points,
   onRemoveItem,
 }) => {
-  // console.log("Item renders");
   return (
     <li>
       <span>
