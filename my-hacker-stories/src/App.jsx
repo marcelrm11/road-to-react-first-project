@@ -47,11 +47,20 @@ const App = () => {
 
   const [searchTerm, setSearchTerm] = useStorageState("search", "React");
   const [stories, setStories] = React.useState([]);
+  const [loadedStories, setLoadedStories] = React.useState(false);
+  const [isError, setIsError] = React.useState(false);
 
   React.useEffect(() => {
-    getAsyncStories().then((result) => {
-      setStories(result.data.stories);
-    });
+    setLoadedStories(false);
+    getAsyncStories()
+      .then((result) => {
+        setStories(result.data.stories);
+        setLoadedStories(true);
+      })
+      .catch((error) => {
+        setIsError(true);
+        console.log(error);
+      });
   }, []);
 
   function handleSearch(event) {
@@ -77,7 +86,12 @@ const App = () => {
       >
         <strong>Search: </strong>
       </InputWithLabel>
-      <List list={filteredStories} onRemoveItem={handleRemoveStory} />
+      {isError && <p>Something went wrong...</p>}
+      {loadedStories ? (
+        <List list={filteredStories} onRemoveItem={handleRemoveStory} />
+      ) : (
+        <p>loading stories...</p>
+      )}
       <MyRadioGroup name="drone" options={drones}>
         <strong>Select a maintenance drone:</strong>
       </MyRadioGroup>
