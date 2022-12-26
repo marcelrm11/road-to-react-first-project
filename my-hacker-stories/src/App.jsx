@@ -1,6 +1,4 @@
 import * as React from "react";
-import MyDropdown from "./reusable components/MyDropdown.jsx";
-import { MyRadioGroup } from "./reusable components/MyRadio.jsx";
 
 const useStorageState = (key, initialState) => {
   const [value, setValue] = React.useState(
@@ -41,7 +39,9 @@ const App = () => {
   // ];
 
   const actions = {
-    setStories: "SET_STORIES",
+    storiesFetchInit: "STORIES_FETCH_INIT",
+    storiesFetchSuccess: "STORIES_FETCH_SUCCESS",
+    storiesFetchFailure: "STORIES_FETCH_FAILURE",
     removeStory: "REMOVE_STORY",
   };
 
@@ -55,20 +55,20 @@ const App = () => {
 
   const storiesReducer = (state, action) => {
     switch (action.type) {
-      case "STORIES_FETCH_INIT":
+      case actions.storiesFetchInit:
         return {
           ...state,
           isLoading: true,
           isError: false,
         };
-      case "STORIES_FETCH_SUCCESS":
+      case actions.storiesFetchSuccess:
         return {
           ...state,
           isLoading: false,
           isError: false,
           data: action.payload,
         };
-      case "STORIES_FETCH_FAILURE":
+      case actions.storiesFetchFailure:
         return {
           ...state,
           isLoading: false,
@@ -101,8 +101,9 @@ const App = () => {
   // ******************************* //
 
   React.useEffect(() => {
+    if (!searchTerm) return;
     // setIsLoading(true);
-    dispatchStories({ type: "STORIES_FETCH_INIT" });
+    dispatchStories({ type: actions.storiesFetchInit });
     // getAsyncStories()
     //   .then((result) => {
     //     // setStories(result.data.stories);
@@ -112,22 +113,22 @@ const App = () => {
     //     });
     //     // setIsLoading(false);
     //   })
-    fetch(`${API_ENDPOINT}react`)
+    fetch(`${API_ENDPOINT}${searchTerm}`)
       .then((response) => response.json())
       .then((result) => {
         dispatchStories({
-          type: "STORIES_FETCH_SUCCESS",
+          type: actions.storiesFetchSuccess,
           payload: result.hits,
         });
       })
       .catch((error) => {
         // setIsError(true);
         dispatchStories({
-          type: "STORIES_FETCH_FAILURE",
+          type: actions.storiesFetchFailure,
         });
         console.log(error);
       });
-  }, []);
+  }, [searchTerm]);
 
   function handleRemoveStory(id) {
     // setStories(stories.filter((story) => story.objectID !== id));
@@ -141,9 +142,9 @@ const App = () => {
     setSearchTerm(event.target.value);
   }
 
-  let searchedStories = stories.data.filter((story) => {
-    return story.title.toLowerCase().match(searchTerm.toLowerCase());
-  });
+  // let searchedStories = stories.data.filter((story) => {
+  //   return story.title.toLowerCase().match(searchTerm.toLowerCase());
+  // });
 
   return (
     <div className="App">
@@ -161,7 +162,7 @@ const App = () => {
       {stories.isLoading ? (
         <p>loading stories...</p>
       ) : (
-        <List list={searchedStories} onRemoveItem={handleRemoveStory} />
+        <List list={stories.data} onRemoveItem={handleRemoveStory} />
       )}
     </div>
   );
