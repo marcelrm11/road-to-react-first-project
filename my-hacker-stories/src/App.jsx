@@ -66,22 +66,19 @@ const App = () => {
   }); // (reducer action, initial state) => (current state, state updater function)
   // ******************************* //
 
-  const handleFetchStories = React.useCallback(() => {
+  const handleFetchStories = React.useCallback(async () => {
     dispatchStories({ type: actions.storiesFetchInit });
-
-    axios
-      .get(url)
-      .then((result) => {
-        dispatchStories({
-          type: actions.storiesFetchSuccess,
-          payload: result.data.hits,
-        });
-      })
-      .catch(() => {
-        dispatchStories({
-          type: actions.storiesFetchFailure,
-        });
+    try {
+      const result = await axios.get(url);
+      dispatchStories({
+        type: actions.storiesFetchSuccess,
+        payload: result.data.hits,
       });
+    } catch {
+      dispatchStories({
+        type: actions.storiesFetchFailure,
+      });
+    }
   }, [url]);
   React.useEffect(() => {
     handleFetchStories();
