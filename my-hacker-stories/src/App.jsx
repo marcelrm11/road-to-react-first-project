@@ -1,4 +1,43 @@
 import * as React from "react";
+import axios from "axios";
+
+const actions = {
+  storiesFetchInit: "STORIES_FETCH_INIT",
+  storiesFetchSuccess: "STORIES_FETCH_SUCCESS",
+  storiesFetchFailure: "STORIES_FETCH_FAILURE",
+  removeStory: "REMOVE_STORY",
+};
+
+const storiesReducer = (state, action) => {
+  switch (action.type) {
+    case actions.storiesFetchInit:
+      return {
+        ...state,
+        isLoading: true,
+        isError: false,
+      };
+    case actions.storiesFetchSuccess:
+      return {
+        ...state,
+        isLoading: false,
+        isError: false,
+        data: action.payload,
+      };
+    case actions.storiesFetchFailure:
+      return {
+        ...state,
+        isLoading: false,
+        isError: true,
+      };
+    case actions.removeStory:
+      return {
+        ...state,
+        data: state.data.filter((story) => story.objectID !== action.payload),
+      };
+    default:
+      throw new Error();
+  }
+};
 
 const useStorageState = (key, initialState) => {
   const [value, setValue] = React.useState(
@@ -16,44 +55,6 @@ const API_ENDPOINT = "https://hn.algolia.com/api/v1/search?query=";
 const App = () => {
   console.log("App renders");
 
-  const actions = {
-    storiesFetchInit: "STORIES_FETCH_INIT",
-    storiesFetchSuccess: "STORIES_FETCH_SUCCESS",
-    storiesFetchFailure: "STORIES_FETCH_FAILURE",
-    removeStory: "REMOVE_STORY",
-  };
-
-  const storiesReducer = (state, action) => {
-    switch (action.type) {
-      case actions.storiesFetchInit:
-        return {
-          ...state,
-          isLoading: true,
-          isError: false,
-        };
-      case actions.storiesFetchSuccess:
-        return {
-          ...state,
-          isLoading: false,
-          isError: false,
-          data: action.payload,
-        };
-      case actions.storiesFetchFailure:
-        return {
-          ...state,
-          isLoading: false,
-          isError: true,
-        };
-      case actions.removeStory:
-        return {
-          ...state,
-          data: state.data.filter((story) => story.objectID !== action.payload),
-        };
-      default:
-        throw new Error();
-    }
-  };
-
   const [searchTerm, setSearchTerm] = useStorageState("search", "React");
   const [url, setUrl] = React.useState(`${API_ENDPOINT}${searchTerm}`);
 
@@ -68,12 +69,12 @@ const App = () => {
   const handleFetchStories = React.useCallback(() => {
     dispatchStories({ type: actions.storiesFetchInit });
 
-    fetch(url)
-      .then((response) => response.json())
+    axios
+      .get(url)
       .then((result) => {
         dispatchStories({
           type: actions.storiesFetchSuccess,
-          payload: result.hits,
+          payload: result.data.hits,
         });
       })
       .catch(() => {
