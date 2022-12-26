@@ -39,23 +39,44 @@ const App = () => {
   const drones = ["huey", "dewey", "louie"];
   const pets = ["dog", "cat", "hamster", "parrot", "spider", "goldfish"];
 
+  const actions = {
+    setStories: "SET_STORIES",
+    removeStory: "REMOVE_STORY",
+  };
+
   const getAsyncStories = () => {
     return new Promise((resolve) =>
       setTimeout(() => resolve({ data: { stories: initialStories } }), 2000)
     );
   };
 
+  const storiesReducer = (state, action) => {
+    switch (action.type) {
+      case actions.setStories:
+        return action.payload;
+      case actions.removeStory:
+        return state.filter((story) => story.objectID !== action.payload);
+      default:
+        throw new Error();
+    }
+  };
+
   const [searchTerm, setSearchTerm] = useStorageState("search", "React");
-  const [stories, setStories] = React.useState([]);
-  const [loadedStories, setLoadedStories] = React.useState(false);
+  // const [stories, setStories] = React.useState([]);
+  const [stories, dispatchStories] = React.useReducer(storiesReducer, []); // (reducer action, initial state) => (current state, state updater function)
+  const [isLoading, setIsLoading] = React.useState(true);
   const [isError, setIsError] = React.useState(false);
 
   React.useEffect(() => {
-    setLoadedStories(false);
+    setIsLoading(true);
     getAsyncStories()
       .then((result) => {
-        setStories(result.data.stories);
-        setLoadedStories(true);
+        // setStories(result.data.stories);
+        dispatchStories({
+          type: actions.setStories,
+          payload: result.data.stories,
+        });
+        setIsLoading(false);
       })
       .catch((error) => {
         setIsError(true);
@@ -63,11 +84,16 @@ const App = () => {
       });
   }, []);
 
+  function handleRemoveStory(id) {
+    // setStories(stories.filter((story) => story.objectID !== id));
+    dispatchStories({
+      type: actions.removeStory,
+      payload: id,
+    });
+  }
+
   function handleSearch(event) {
     setSearchTerm(event.target.value);
-  }
-  function handleRemoveStory(id) {
-    setStories(stories.filter((story) => story.objectID !== id));
   }
 
   let filteredStories = stories.filter((story) => {
@@ -87,10 +113,10 @@ const App = () => {
         <strong>Search: </strong>
       </InputWithLabel>
       {isError && <p>Something went wrong...</p>}
-      {loadedStories ? (
-        <List list={filteredStories} onRemoveItem={handleRemoveStory} />
-      ) : (
+      {isLoading ? (
         <p>loading stories...</p>
+      ) : (
+        <List list={filteredStories} onRemoveItem={handleRemoveStory} />
       )}
       <MyRadioGroup name="drone" options={drones}>
         <strong>Select a maintenance drone:</strong>
