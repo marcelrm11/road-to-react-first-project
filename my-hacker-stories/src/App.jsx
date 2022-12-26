@@ -49,37 +49,73 @@ const App = () => {
       setTimeout(() => resolve({ data: { stories: initialStories } }), 2000)
     );
   };
+  // const getAsyncStories = () =>
+  //   new Promise((resolve, reject) => setTimeout(reject, 2000));
 
   const storiesReducer = (state, action) => {
     switch (action.type) {
-      case actions.setStories:
-        return action.payload;
+      case "STORIES_FETCH_INIT":
+        return {
+          ...state,
+          isLoading: true,
+          isError: false,
+        };
+      case "STORIES_FETCH_SUCCESS":
+        return {
+          ...state,
+          isLoading: false,
+          isError: false,
+          data: action.payload,
+        };
+      case "STORIES_FETCH_FAILURE":
+        return {
+          ...state,
+          isLoading: false,
+          isError: true,
+        };
       case actions.removeStory:
-        return state.filter((story) => story.objectID !== action.payload);
+        return {
+          ...state,
+          data: state.data.filter((story) => story.objectID !== action.payload),
+        };
       default:
         throw new Error();
     }
   };
 
   const [searchTerm, setSearchTerm] = useStorageState("search", "React");
+
+  // ********** useState *********** //
   // const [stories, setStories] = React.useState([]);
-  const [stories, dispatchStories] = React.useReducer(storiesReducer, []); // (reducer action, initial state) => (current state, state updater function)
-  const [isLoading, setIsLoading] = React.useState(true);
-  const [isError, setIsError] = React.useState(false);
+  // const [isLoading, setIsLoading] = React.useState(false);
+  // const [isError, setIsError] = React.useState(false);
+  // ******************************* //
+
+  // ********** useReducer ********* //
+  const [stories, dispatchStories] = React.useReducer(storiesReducer, {
+    data: [],
+    isLoading: false,
+    isError: false,
+  }); // (reducer action, initial state) => (current state, state updater function)
+  // ******************************* //
 
   React.useEffect(() => {
-    setIsLoading(true);
+    // setIsLoading(true);
+    dispatchStories({ type: "STORIES_FETCH_INIT" });
     getAsyncStories()
       .then((result) => {
         // setStories(result.data.stories);
         dispatchStories({
-          type: actions.setStories,
+          type: "STORIES_FETCH_SUCCESS",
           payload: result.data.stories,
         });
-        setIsLoading(false);
+        // setIsLoading(false);
       })
       .catch((error) => {
-        setIsError(true);
+        // setIsError(true);
+        dispatchStories({
+          type: "STORIES_FETCH_FAILURE",
+        });
         console.log(error);
       });
   }, []);
@@ -96,7 +132,7 @@ const App = () => {
     setSearchTerm(event.target.value);
   }
 
-  let filteredStories = stories.filter((story) => {
+  let searchedStories = stories.data.filter((story) => {
     return story.title.toLowerCase().match(searchTerm.toLowerCase());
   });
 
@@ -112,11 +148,11 @@ const App = () => {
       >
         <strong>Search: </strong>
       </InputWithLabel>
-      {isError && <p>Something went wrong...</p>}
-      {isLoading ? (
+      {stories.isError && <p>Something went wrong...</p>}
+      {stories.isLoading ? (
         <p>loading stories...</p>
       ) : (
-        <List list={filteredStories} onRemoveItem={handleRemoveStory} />
+        <List list={searchedStories} onRemoveItem={handleRemoveStory} />
       )}
       <MyRadioGroup name="drone" options={drones}>
         <strong>Select a maintenance drone:</strong>
