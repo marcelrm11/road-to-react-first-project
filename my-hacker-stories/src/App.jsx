@@ -12,43 +12,44 @@ const useStorageState = (key, initialState) => {
 
   return [value, setValue];
 };
+
+const API_ENDPOINT = "https://hn.algolia.com/api/v1/search?query=";
+
 const App = () => {
   console.log("App renders");
-  const initialStories = [
-    {
-      title: "React",
-      url: "https://reactjs.org/",
-      author: "Jordan Walke",
-      num_comments: 3,
-      points: 4,
-      objectID: 0,
-    },
-    {
-      title: "Redux",
-      url: "https://redux.js.org/",
-      author: "Dan Abramov, Andrew Clark",
-      num_comments: 2,
-      points: 5,
-      objectID: 1,
-    },
-    {
-      title: "Realololo",
-      objectID: 2,
-    },
-  ];
-  const drones = ["huey", "dewey", "louie"];
-  const pets = ["dog", "cat", "hamster", "parrot", "spider", "goldfish"];
+  // const initialStories = [
+  //   {
+  //     title: "React",
+  //     url: "https://reactjs.org/",
+  //     author: "Jordan Walke",
+  //     num_comments: 3,
+  //     points: 4,
+  //     objectID: 0,
+  //   },
+  //   {
+  //     title: "Redux",
+  //     url: "https://redux.js.org/",
+  //     author: "Dan Abramov, Andrew Clark",
+  //     num_comments: 2,
+  //     points: 5,
+  //     objectID: 1,
+  //   },
+  //   {
+  //     title: "Realololo",
+  //     objectID: 2,
+  //   },
+  // ];
 
   const actions = {
     setStories: "SET_STORIES",
     removeStory: "REMOVE_STORY",
   };
 
-  const getAsyncStories = () => {
-    return new Promise((resolve) =>
-      setTimeout(() => resolve({ data: { stories: initialStories } }), 2000)
-    );
-  };
+  // const getAsyncStories = () => {
+  // return new Promise((resolve) =>
+  //   setTimeout(() => resolve({ data: { stories: initialStories } }), 2000)
+  // );
+  // };
   // const getAsyncStories = () =>
   //   new Promise((resolve, reject) => setTimeout(reject, 2000));
 
@@ -102,14 +103,22 @@ const App = () => {
   React.useEffect(() => {
     // setIsLoading(true);
     dispatchStories({ type: "STORIES_FETCH_INIT" });
-    getAsyncStories()
+    // getAsyncStories()
+    //   .then((result) => {
+    //     // setStories(result.data.stories);
+    //     dispatchStories({
+    //       type: "STORIES_FETCH_SUCCESS",
+    //       payload: result.data.stories,
+    //     });
+    //     // setIsLoading(false);
+    //   })
+    fetch(`${API_ENDPOINT}react`)
+      .then((response) => response.json())
       .then((result) => {
-        // setStories(result.data.stories);
         dispatchStories({
           type: "STORIES_FETCH_SUCCESS",
-          payload: result.data.stories,
+          payload: result.hits,
         });
-        // setIsLoading(false);
       })
       .catch((error) => {
         // setIsError(true);
@@ -154,12 +163,6 @@ const App = () => {
       ) : (
         <List list={searchedStories} onRemoveItem={handleRemoveStory} />
       )}
-      <MyRadioGroup name="drone" options={drones}>
-        <strong>Select a maintenance drone:</strong>
-      </MyRadioGroup>
-      <MyDropdown id="pet-select" options={pets}>
-        <strong>Choose a pet: </strong>
-      </MyDropdown>
     </div>
   );
 };
