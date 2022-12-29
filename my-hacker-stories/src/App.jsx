@@ -1,5 +1,6 @@
 import * as React from "react";
 import axios from "axios";
+import "./App.css";
 
 const actions = {
   storiesFetchInit: "STORIES_FETCH_INIT",
@@ -67,7 +68,7 @@ const App = () => {
   // ******************************* //
 
   const handleFetchStories = React.useCallback(async () => {
-    dispatchStories({ type: actions.storiesFetchInit });
+    dispatchStories({ type: actions.storiesFetchInit }); // loading true
     try {
       const result = await axios.get(url);
       dispatchStories({
