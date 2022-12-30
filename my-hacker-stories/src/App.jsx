@@ -1,6 +1,7 @@
 import * as React from "react";
 import axios from "axios";
-import "./App.css";
+import styles from "./App.module.css";
+import clsx from "clsx";
 
 const actions = {
   storiesFetchInit: "STORIES_FETCH_INIT",
@@ -102,14 +103,13 @@ const App = () => {
   };
 
   return (
-    <div className="App">
-      <h1>My Hacker Stories</h1>
+    <div className={styles.container}>
+      <h1 className={styles.headlinePrimary}>My Hacker Stories</h1>
       <SearchForm
         searchTerm={searchTerm}
         onSearchInput={handleSearchInput}
         onSearchSubmit={handleSearchSubmit}
       />
-      <hr />
       {stories.isError && <p>Something went wrong...</p>}
       {stories.isLoading ? (
         <p>loading stories...</p>
@@ -122,7 +122,7 @@ const App = () => {
 
 const SearchForm = ({ searchTerm, onSearchInput, onSearchSubmit }) => {
   return (
-    <form onSubmit={onSearchSubmit}>
+    <form onSubmit={onSearchSubmit} className={styles.SearchForm}>
       <InputWithLabel
         id="search"
         value={searchTerm}
@@ -131,7 +131,11 @@ const SearchForm = ({ searchTerm, onSearchInput, onSearchSubmit }) => {
       >
         <strong>Search: </strong>
       </InputWithLabel>
-      <button type="submit" disabled={!searchTerm}>
+      <button
+        type="submit"
+        disabled={!searchTerm}
+        className={clsx(styles.button, styles.buttonLarge)}
+      >
         Submit
       </button>
     </form>
@@ -161,14 +165,22 @@ const Item = ({
   onRemoveItem,
 }) => {
   return (
-    <li>
-      <span>
+    <li className={styles.item}>
+      <span style={{ width: "40%" }}>
         <a href={url}>{title}</a>
       </span>
-      <span>{author}</span>
-      <span>{num_comments}</span>
-      <span>{points}</span>
-      <button onClick={() => onRemoveItem(objectID)}>Remove</button>
+      <span style={{ width: "30%" }}>{author}</span>
+      <span style={{ width: "10%" }}>{num_comments}</span>
+      <span style={{ width: "10%" }}>{points}</span>
+      <span style={{ width: "10%" }}>
+        <button
+          type="button"
+          onClick={() => onRemoveItem(objectID)}
+          className={`${styles.button} ${styles.buttonSmall}`}
+        >
+          Dismiss
+        </button>
+      </span>
     </li>
   );
 };
@@ -186,7 +198,10 @@ const InputWithLabel = ({
 
   return (
     <>
-      <label htmlFor={id}>{children}</label>
+      <label htmlFor={id} className={styles.label}>
+        {children}
+      </label>
+      &nbsp;
       <input
         id={id}
         type={type}
@@ -194,6 +209,7 @@ const InputWithLabel = ({
         onChange={onInputChange}
         autoComplete={autoComplete}
         autoFocus={isFocused}
+        className={styles.input}
       ></input>
     </>
   );
