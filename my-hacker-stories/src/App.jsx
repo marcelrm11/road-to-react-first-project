@@ -108,6 +108,7 @@ const App = () => {
         searchTerm={searchTerm}
         onSearchInput={handleSearchInput}
         onSearchSubmit={handleSearchSubmit}
+        buttonSizeClass="button_large"
       />
       {stories.isError && <p>Something went wrong...</p>}
       {stories.isLoading ? (
@@ -119,7 +120,12 @@ const App = () => {
   );
 };
 
-const SearchForm = ({ searchTerm, onSearchInput, onSearchSubmit }) => {
+const SearchForm = ({
+  searchTerm,
+  onSearchInput,
+  onSearchSubmit,
+  buttonSizeClass,
+}) => {
   return (
     <form onSubmit={onSearchSubmit} className="search-form">
       <InputWithLabel
@@ -133,7 +139,7 @@ const SearchForm = ({ searchTerm, onSearchInput, onSearchSubmit }) => {
       <button
         type="submit"
         disabled={!searchTerm}
-        className="button button_large"
+        className={`button ${buttonSizeClass}`}
       >
         Submit
       </button>
