@@ -2,6 +2,8 @@ import * as React from "react";
 import axios from "axios";
 import "./App.css";
 
+import { ReactComponent as Check } from "./check.svg";
+
 const actions = {
   storiesFetchInit: "STORIES_FETCH_INIT",
   storiesFetchSuccess: "STORIES_FETCH_SUCCESS",
@@ -183,7 +185,7 @@ const Item = ({
           onClick={() => onRemoveItem(objectID)}
           className="button button_small"
         >
-          Dismiss
+          <Check height="18px" width="18px" />
         </button>
       </span>
     </li>
