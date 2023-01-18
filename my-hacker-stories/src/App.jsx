@@ -18,6 +18,69 @@ const StyledHeadlinePrimary = styled.h1`
   letter-spacing: 2px;
 `;
 
+const StyledItem = styled.li`
+  display: flex;
+  align-items: center;
+  padding-bottom: 5px;
+`;
+
+const StyledColumn = styled.span`
+  padding: 0 5px;
+  white-space: nowrap;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  /* Advanced features like CSS nesting are available in Styled Components by default. */
+  a {
+    color: inherit;
+  }
+  /* The flexible width prop is accessible in the styled component's template literal as an argument of an inline function. The return value from the function is applied there as a string. */
+  width: ${(props) => props.width};
+`;
+
+const StyledButton = styled.button`
+  background: transparent;
+  border: 1px solid #171212;
+  padding: 5px;
+  cursor: pointer;
+
+  transition: all 0.1s ease-in;
+
+  &:hover {
+    background: #171212;
+    color: #fff;
+  }
+`;
+
+const StyledButtonSmall = styled(StyledButton)`
+  padding: 5px;
+`;
+
+const StyledButtonLarge = styled(StyledButton)`
+  padding: 10px;
+`;
+
+const StyledSearchForm = styled.form`
+  padding: 10px 0 20px 0;
+  display: flex;
+  align-items: baseline;
+`;
+
+const StyledLabel = styled.label`
+  border-top: 1px solid #171212;
+  border-left: 1px solid #171212;
+  padding-left: 5px;
+  font-size: 24px;
+`;
+
+const StyledInput = styled.input`
+  border: none;
+  border-bottom: 1px solid #171212;
+  background-color: transparent;
+
+  font-size: 24px;
+`;
+
 const actions = {
   storiesFetchInit: "STORIES_FETCH_INIT",
   storiesFetchSuccess: "STORIES_FETCH_SUCCESS",
@@ -138,7 +201,7 @@ const App = () => {
 
 const SearchForm = ({ searchTerm, onSearchInput, onSearchSubmit }) => {
   return (
-    <form onSubmit={onSearchSubmit}>
+    <StyledSearchForm onSubmit={onSearchSubmit}>
       <InputWithLabel
         id="search"
         value={searchTerm}
@@ -147,10 +210,10 @@ const SearchForm = ({ searchTerm, onSearchInput, onSearchSubmit }) => {
       >
         <strong>Search: </strong>
       </InputWithLabel>
-      <button type="submit" disabled={!searchTerm}>
+      <StyledButtonLarge type="submit" disabled={!searchTerm}>
         Submit
-      </button>
-    </form>
+      </StyledButtonLarge>
+    </StyledSearchForm>
   );
 };
 
@@ -177,15 +240,19 @@ const Item = ({
   onRemoveItem,
 }) => {
   return (
-    <li>
-      <span>
+    <StyledItem>
+      <StyledColumn width="40%">
         <a href={url}>{title}</a>
-      </span>
-      <span>{author}</span>
-      <span>{num_comments}</span>
-      <span>{points}</span>
-      <button onClick={() => onRemoveItem(objectID)}>Remove</button>
-    </li>
+      </StyledColumn>
+      <StyledColumn width="30%">{author}</StyledColumn>
+      <StyledColumn width="10%">{num_comments}</StyledColumn>
+      <StyledColumn width="10%">{points}</StyledColumn>
+      <StyledColumn width="10%">
+        <StyledButtonSmall type="button" onClick={() => onRemoveItem(objectID)}>
+          Remove
+        </StyledButtonSmall>
+      </StyledColumn>
+    </StyledItem>
   );
 };
 
@@ -202,15 +269,15 @@ const InputWithLabel = ({
 
   return (
     <>
-      <label htmlFor={id}>{children}</label>
-      <input
+      <StyledLabel htmlFor={id}>{children}</StyledLabel>
+      <StyledInput
         id={id}
         type={type}
         value={value}
         onChange={onInputChange}
         autoComplete={autoComplete}
         autoFocus={isFocused}
-      ></input>
+      ></StyledInput>
     </>
   );
 };
