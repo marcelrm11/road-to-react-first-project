@@ -99,12 +99,14 @@ const App = () => {
     handleFetchStories();
   }, [handleFetchStories]);
 
-  function handleRemoveStory(id) {
+  // The list passed to the List component is the same, but the onRemoveItem callback handler isn't. If the App component re-renders, it always creates a new version of this callback handler as a new function.
+  // Since the callback handler gets the id passed as an argument in its function signature, it doesn't have any dependencies and is declared only once when the App component initially renders. None of the props passed to the List component should change now.
+  const handleRemoveStory = React.useCallback((id) => {
     dispatchStories({
       type: actions.removeStory,
       payload: id,
     });
-  }
+  }, []);
 
   function handleSearchInput(event) {
     setSearchTerm(event.target.value);
@@ -163,7 +165,9 @@ const SearchForm = ({
   );
 };
 
-const List = ({ list, onRemoveItem }) => {
+// to make an equality check on the list, so it doesn't re-render every time App re-renders (when typing in search bar) if the list didn't change
+// React's memo API checks whether the props of a component have changed. If not, it does not re-render even though its parent component re-rendered. See handleRemoveStory
+const List = React.memo(({ list, onRemoveItem }) => {
   console.log("List renders");
   return (
     <ul>
@@ -174,7 +178,7 @@ const List = ({ list, onRemoveItem }) => {
       })}
     </ul>
   );
-};
+});
 
 const Item = ({
   title,
