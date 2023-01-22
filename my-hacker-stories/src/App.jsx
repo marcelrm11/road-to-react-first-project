@@ -3,6 +3,7 @@ import axios from "axios";
 import "./App.css";
 
 import { ReactComponent as Check } from "./check.svg";
+import { ReactComponent as Search } from "./search.svg";
 
 const actions = {
   storiesFetchInit: "STORIES_FETCH_INIT",
@@ -143,7 +144,7 @@ const SearchForm = ({
         disabled={!searchTerm}
         className={`button ${buttonSizeClass}`}
       >
-        Submit
+        <Search height="18px" width="18px" />
       </button>
     </form>
   );
