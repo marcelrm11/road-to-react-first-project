@@ -66,6 +66,11 @@ const useStorageState = (key, initialState) => {
 
 const API_ENDPOINT = "https://hn.algolia.com/api/v1/search?query=";
 
+const getSumComments = (stories) => {
+  console.log("getSumComments computation");
+  return stories.data.reduce((result, value) => result + value.num_comments, 0);
+};
+
 const App = () => {
   console.log("App renders");
 
@@ -117,10 +122,14 @@ const App = () => {
     event.preventDefault();
   };
 
+  // example of a performance-intensive computation before component return
+  // We can tell React to only run a function if one of its dependencies has changed. If no dependency changed, the result of the function stays the same. React's useMemo Hook helps us here:
+  const sumComments = React.useMemo(() => getSumComments(stories), [stories]);
+
   return (
     <div className="container">
       <h1 className="headline-primary">
-        My Hacker Stories <FaReact />
+        My Hacker Stories <FaReact /> with {sumComments} comments.
       </h1>
       <SearchForm
         searchTerm={searchTerm}
