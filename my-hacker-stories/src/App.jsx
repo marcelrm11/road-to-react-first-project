@@ -113,14 +113,14 @@ const App = () => {
     });
   }, []);
 
-  function handleSearchInput(event) {
+  const handleSearchInput = React.useCallback((event) => {
     setSearchTerm(event.target.value);
-  }
+  }, []);
 
-  const handleSearchSubmit = (event) => {
+  const handleSearchSubmit = React.useCallback((event) => {
     setUrl(`${API_ENDPOINT}${searchTerm}`);
     event.preventDefault();
-  };
+  }, []);
 
   // example of a performance-intensive computation before component return
   // We can tell React to only run a function if one of its dependencies has changed. If no dependency changed, the result of the function stays the same. React's useMemo Hook helps us here:
@@ -147,32 +147,30 @@ const App = () => {
   );
 };
 
-const SearchForm = ({
-  searchTerm,
-  onSearchInput,
-  onSearchSubmit,
-  buttonSizeClass,
-}) => {
-  return (
-    <form onSubmit={onSearchSubmit} className="search-form">
-      <InputWithLabel
-        id="search"
-        value={searchTerm}
-        onInputChange={onSearchInput}
-        isFocused
-      >
-        <strong>Search: </strong>
-      </InputWithLabel>
-      <button
-        type="submit"
-        disabled={!searchTerm}
-        className={`button ${buttonSizeClass}`}
-      >
-        <Search height="18px" width="18px" />
-      </button>
-    </form>
-  );
-};
+const SearchForm = React.memo(
+  ({ searchTerm, onSearchInput, onSearchSubmit, buttonSizeClass }) => {
+    console.log("SearchForm renders");
+    return (
+      <form onSubmit={onSearchSubmit} className="search-form">
+        <InputWithLabel
+          id="search"
+          value={searchTerm}
+          onInputChange={onSearchInput}
+          isFocused
+        >
+          <strong>Search: </strong>
+        </InputWithLabel>
+        <button
+          type="submit"
+          disabled={!searchTerm}
+          className={`button ${buttonSizeClass}`}
+        >
+          <Search height="18px" width="18px" />
+        </button>
+      </form>
+    );
+  }
+);
 
 // to make an equality check on the list, so it doesn't re-render every time App re-renders (when typing in search bar) if the list didn't change
 // React's memo API checks whether the props of a component have changed. If not, it does not re-render even though its parent component re-rendered. See handleRemoveStory
@@ -189,35 +187,30 @@ const List = React.memo(({ list, onRemoveItem }) => {
   );
 });
 
-const Item = ({
-  title,
-  objectID,
-  url,
-  author,
-  num_comments,
-  points,
-  onRemoveItem,
-}) => {
-  return (
-    <li className="item">
-      <span style={{ width: "40%" }}>
-        <a href={url}>{title}</a>
-      </span>
-      <span style={{ width: "30%" }}>{author}</span>
-      <span style={{ width: "10%" }}>{num_comments}</span>
-      <span style={{ width: "10%" }}>{points}</span>
-      <span style={{ width: "10%" }}>
-        <button
-          type="button"
-          onClick={() => onRemoveItem(objectID)}
-          className="button button_small"
-        >
-          <Check height="18px" width="18px" />
-        </button>
-      </span>
-    </li>
-  );
-};
+const Item = React.memo(
+  ({ title, objectID, url, author, num_comments, points, onRemoveItem }) => {
+    console.log("Item renders");
+    return (
+      <li className="item">
+        <span style={{ width: "40%" }}>
+          <a href={url}>{title}</a>
+        </span>
+        <span style={{ width: "30%" }}>{author}</span>
+        <span style={{ width: "10%" }}>{num_comments}</span>
+        <span style={{ width: "10%" }}>{points}</span>
+        <span style={{ width: "10%" }}>
+          <button
+            type="button"
+            onClick={() => onRemoveItem(objectID)}
+            className="button button_small"
+          >
+            <Check height="18px" width="18px" />
+          </button>
+        </span>
+      </li>
+    );
+  }
+);
 
 const InputWithLabel = ({
   id,
