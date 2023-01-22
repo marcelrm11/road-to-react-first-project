@@ -45,11 +45,20 @@ const storiesReducer = (state, action) => {
 };
 
 const useStorageState = (key, initialState) => {
+  // useRef not to run useStorage on first render
+  const isMounted = React.useRef(false);
   const [value, setValue] = React.useState(
     localStorage.getItem(key) ?? initialState
   );
   React.useEffect(() => {
-    localStorage.setItem(key, value);
+    if (!isMounted.current) {
+      // first render
+      isMounted.current = true;
+    } else {
+      // re-renders
+      console.log("useStorage");
+      localStorage.setItem(key, value);
+    }
   }, [value, key]);
 
   return [value, setValue];
@@ -58,7 +67,7 @@ const useStorageState = (key, initialState) => {
 const API_ENDPOINT = "https://hn.algolia.com/api/v1/search?query=";
 
 const App = () => {
-  // console.log("App renders");
+  console.log("App renders");
 
   const [searchTerm, setSearchTerm] = useStorageState("search", "React");
   const [url, setUrl] = React.useState(`${API_ENDPOINT}${searchTerm}`);
@@ -155,7 +164,7 @@ const SearchForm = ({
 };
 
 const List = ({ list, onRemoveItem }) => {
-  // console.log("List renders");
+  console.log("List renders");
   return (
     <ul>
       {list.map((item) => {
