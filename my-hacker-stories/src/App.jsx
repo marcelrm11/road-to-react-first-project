@@ -2,6 +2,10 @@ import * as React from "react";
 import axios from "axios";
 import "./App.css";
 
+import { ReactComponent as Check } from "./check.svg";
+import { ReactComponent as Search } from "./search.svg";
+import { FaReact } from "react-icons/fa";
+
 const actions = {
   storiesFetchInit: "STORIES_FETCH_INIT",
   storiesFetchSuccess: "STORIES_FETCH_SUCCESS",
@@ -54,7 +58,7 @@ const useStorageState = (key, initialState) => {
 const API_ENDPOINT = "https://hn.algolia.com/api/v1/search?query=";
 
 const App = () => {
-  console.log("App renders");
+  // console.log("App renders");
 
   const [searchTerm, setSearchTerm] = useStorageState("search", "React");
   const [url, setUrl] = React.useState(`${API_ENDPOINT}${searchTerm}`);
@@ -82,6 +86,7 @@ const App = () => {
     }
   }, [url]);
   React.useEffect(() => {
+    console.log("How many times do I log?");
     handleFetchStories();
   }, [handleFetchStories]);
 
@@ -103,7 +108,9 @@ const App = () => {
 
   return (
     <div className="container">
-      <h1 className="headline-primary">My Hacker Stories</h1>
+      <h1 className="headline-primary">
+        My Hacker Stories <FaReact />
+      </h1>
       <SearchForm
         searchTerm={searchTerm}
         onSearchInput={handleSearchInput}
@@ -141,14 +148,14 @@ const SearchForm = ({
         disabled={!searchTerm}
         className={`button ${buttonSizeClass}`}
       >
-        Submit
+        <Search height="18px" width="18px" />
       </button>
     </form>
   );
 };
 
 const List = ({ list, onRemoveItem }) => {
-  console.log("List renders");
+  // console.log("List renders");
   return (
     <ul>
       {list.map((item) => {
@@ -183,7 +190,7 @@ const Item = ({
           onClick={() => onRemoveItem(objectID)}
           className="button button_small"
         >
-          Dismiss
+          <Check height="18px" width="18px" />
         </button>
       </span>
     </li>
@@ -199,7 +206,7 @@ const InputWithLabel = ({
   children,
   isFocused,
 }) => {
-  console.log("Search renders");
+  // console.log("Search renders");
 
   return (
     <>
